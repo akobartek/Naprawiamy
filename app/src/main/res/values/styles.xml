@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="colorPrimary">#402222</item>
+        <item name="colorPrimaryDark">#391e1e</item>
+        <item name="colorAccent">#391e1e</item>
+        <item name="colorText">#391e1e</item>
+        <item name="colorButtonText">#000000</item>
+        <item name="colorIcons">#4e342e</item>
+        <item name="colorMenuIcons">#777777</item>
+        <item name="colorBackground">#FFFFFF</item>
+        <item name="colorListItemBackground">#FFFFFF</item>
+        <item name="colorControlLight">#39000000</item>
+        <item name="colorIndicatorInactive">#BBBBBB</item>
+        <item name="eventFilterViewStyle">@style/Widget.Naprawiamy.Category</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Widget.Naprawiamy" parent="@android:style/Widget.Material" />
+
+    <style name="Widget.Naprawiamy.Category">
+        <item name="android:letterSpacing">-0.06</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:strokeColor">?colorControlLight</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="outlineWidth">1dp</item>
+        <item name="clearIcon">@drawable/ic_close</item>
+        <item name="foreground">?selectableItemBackground</item>
+        <item name="showIcons">true</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.DayNight.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight" />
+
+</resources>

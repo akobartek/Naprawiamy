@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorListItemBackground"
+        android:paddingBottom="4dp">
+
+        <TextView
+            android:id="@+id/proposalSpecialistName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:fontFamily="sans-serif-light"
+            android:paddingBottom="8dp"
+            android:textColor="?attr/colorText"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toStartOf="@+id/proposalRating"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proposalValue"
+            tools:text="Grzegorz Brzęczyszczykiewicz" />
+
+        <TextView
+            android:id="@+id/proposalValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="24dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-condensed"
+            android:maxLines="1"
+            android:textColor="#FF2222"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="200 PLN" />
+
+        <TextView
+            android:id="@+id/proposalDeadline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-light"
+            android:maxLines="1"
+            android:textColor="?attr/colorText"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="11.11.2019" />
+
+        <ImageView
+            android:id="@+id/starsImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_star"
+            app:layout_constraintBottom_toBottomOf="@+id/proposalSpecialistName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/proposalSpecialistName"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/proposalRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:textColor="?attr/colorText"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/starsImage"
+            app:layout_constraintEnd_toStartOf="@+id/starsImage"
+            app:layout_constraintTop_toTopOf="@+id/starsImage"
+            tools:text="4.5/5" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/acceptProposalBtn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/accept_proposal"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+            android:textColor="?attr/colorAccent"
+            app:cornerRadius="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proposalSpecialistName"
+            app:strokeColor="?colorAccent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

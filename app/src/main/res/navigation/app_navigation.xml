@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listings_navigation"
+    app:startDestination="@+id/listingsListFragment">
+
+    <fragment
+        android:id="@+id/listingsListFragment"
+        android:name="pl.sokolowskibartlomiej.naprawiamy.view.fragments.ListingsListFragment"
+        tools:layout="@layout/fragment_listings_list">
+
+        <action
+            android:id="@+id/showAddListingFragment"
+            app:destination="@+id/addListingFragment"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:popEnterAnim="@anim/slide_in_top" />
+        <action
+            android:id="@+id/showListingDetailsFragment"
+            app:destination="@+id/listingDetailsFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popEnterAnim="@anim/slide_in_top" />
+        <action
+            android:id="@+id/showAccountFragment"
+            app:destination="@+id/accountFragment"
+            app:enterAnim="@anim/slide_in_left" />
+        <action
+            android:id="@+id/showSettingsFragment"
+            app:destination="@+id/settingsFragment"
+            app:enterAnim="@anim/slide_in_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addListingFragment"
+        android:name="pl.sokolowskibartlomiej.naprawiamy.view.fragments.ListingAddFragment"
+        tools:layout="@layout/fragment_listing_add" />
+
+    <fragment
+        android:id="@+id/listingDetailsFragment"
+        android:name="pl.sokolowskibartlomiej.naprawiamy.view.fragments.ListingDetailsFragment"
+        tools:layout="@layout/fragment_listing_details">
+
+        <argument
+            android:name="listing"
+            app:argType="pl.sokolowskibartlomiej.naprawiamy.model.ListingWithImages"
+            app:nullable="false" />
+        <argument
+            android:name="transitionName"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="pl.sokolowskibartlomiej.naprawiamy.view.fragments.AccountFragment"
+        tools:layout="@layout/fragment_account">
+
+        <action
+            android:id="@+id/showListingsListFragment"
+            app:destination="@+id/listingsListFragment"
+            app:enterAnim="@anim/slide_in_right" />
+        <action
+            android:id="@+id/showSettingsFragment"
+            app:destination="@+id/settingsFragment"
+            app:enterAnim="@anim/slide_in_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="pl.sokolowskibartlomiej.naprawiamy.view.fragments.SettingsFragment">
+
+        <action
+            android:id="@+id/showListingsListFragment"
+            app:destination="@+id/listingsListFragment"
+            app:enterAnim="@anim/slide_in_left" />
+        <action
+            android:id="@+id/showAccountFragment"
+            app:destination="@+id/accountFragment"
+            app:enterAnim="@anim/slide_in_left" />
+    </fragment>
+
+</navigation>

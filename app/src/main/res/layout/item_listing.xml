@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorListItemBackground">
+
+        <ImageView
+            android:id="@+id/listingPhoto"
+            android:layout_width="120dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/listing_photo_description"
+            app:layout_constraintBottom_toBottomOf="@+id/listingPrice"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/listingTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:fontFamily="sans-serif-light"
+            android:paddingBottom="8dp"
+            android:textColor="?attr/colorText"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/listingPhoto"
+            app:layout_constraintTop_toBottomOf="@+id/listingCity"
+            tools:text="Bardzo bardzo długa nazwa wystawionej oferty" />
+
+        <TextView
+            android:id="@+id/listingCity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="end"
+            android:maxLines="1"
+            android:textColor="?attr/colorText"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/listingPhoto"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Wrocław" />
+
+        <TextView
+            android:id="@+id/listingPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="4dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="end"
+            android:maxLines="1"
+            android:paddingBottom="8dp"
+            android:textColor="#FF2222"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/listingPhoto"
+            app:layout_constraintTop_toBottomOf="@+id/listingTitle"
+            tools:text="200 PLN" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addRatingBtn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rate_realization"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+            android:textColor="?attr/colorAccent"
+            android:visibility="gone"
+            app:cornerRadius="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/listingPrice"
+            app:strokeColor="?colorAccent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/deleteVoteBtn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_vote"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+            android:textColor="?attr/colorAccent"
+            android:visibility="gone"
+            app:cornerRadius="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/listingPrice"
+            app:strokeColor="?colorAccent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
