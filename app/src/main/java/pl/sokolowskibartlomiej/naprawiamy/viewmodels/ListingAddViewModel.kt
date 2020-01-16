@@ -26,27 +26,15 @@ class ListingAddViewModel(val app: Application) : AndroidViewModel(app) {
                 val savedListing = repository.saveListing(listing)
                 photos.forEach {
                     val file = FileUtils.getFile(fragment.requireContext(), it)
-//                    var isFileConverted = false
-//                    if (file.extension.toLowerCase() != "png") {
-//                        val originalBitmap = BitmapFactory.decodeFile(file.path)
-//                        val convertedFile = File(
-//                            file.absolutePath.replace(
-//                                file.name, "/converted_${file.nameWithoutExtension}.png"
-//                            )
-//                        )
-//                        val outStream = FileOutputStream(convertedFile)
-//                        isFileConverted =
-//                            originalBitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)
-//                        file = convertedFile
-//                        outStream.flush()
-//                    }
                     val requestImageFile =
-                        RequestBody.create(MediaType.parse(FileUtils.MIME_TYPE_IMAGE), file)
+                        RequestBody.create(
+                            MediaType.parse(fragment.requireActivity().contentResolver.getType(it)!!),
+                            file
+                        )
                     val multipartBody =
                         MultipartBody.Part.createFormData("file", file.name, requestImageFile)
                     val image = repository.uploadImage(multipartBody)
                     repository.addListingImage(ListingImage(0, savedListing.id!!, image.id))
-//                    if (isFileConverted) file.delete()
                 }
                 fragment.requireActivity().runOnUiThread {
                     fragment.loadingDialog.dismiss()

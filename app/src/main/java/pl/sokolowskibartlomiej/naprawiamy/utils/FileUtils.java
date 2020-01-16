@@ -13,18 +13,6 @@ import java.io.File;
 public class FileUtils {
     private FileUtils() {} //private constructor to enforce Singleton pattern
 
-    /** TAG for log messages. */
-    private static final String TAG = "FileUtils";
-    private static final boolean DEBUG = false; // Set to true to enable logging
-
-    public static final String MIME_TYPE_AUDIO = "audio/*";
-    public static final String MIME_TYPE_TEXT = "text/*";
-    public static final String MIME_TYPE_IMAGE = "image/*";
-    public static final String MIME_TYPE_VIDEO = "video/*";
-    public static final String MIME_TYPE_APP = "application/*";
-
-    public static final String HIDDEN_PREFIX = ".";
-
     /**
      * Gets the extension of a file name, like ".png" or ".jpg".
      *
@@ -64,7 +52,6 @@ public class FileUtils {
                 if ("primary".equalsIgnoreCase(type)) {
                     return Environment.getExternalStorageDirectory().getPath() + "/" + split[1];
                 }
-                // TODO handle non-primary volumes
             }
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {
@@ -105,18 +92,13 @@ public class FileUtils {
     }
 
     private static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
-        Cursor cursor = null;
         final String column = "_data";
         final String[] projection = { column };
-        try {
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+        try (Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 final int index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(index);
             }
-        } finally {
-            if (cursor != null)
-                cursor.close();
         }
         return null;
     }

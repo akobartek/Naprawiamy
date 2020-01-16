@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.android.synthetic.main.item_listing.view.*
 import pl.sokolowskibartlomiej.naprawiamy.R
+import pl.sokolowskibartlomiej.naprawiamy.apicalls.RetrofitClient.BASE_API_URL
 import pl.sokolowskibartlomiej.naprawiamy.model.ListingVote
 import pl.sokolowskibartlomiej.naprawiamy.model.ListingWithImages
 import pl.sokolowskibartlomiej.naprawiamy.utils.GlideApp
@@ -97,7 +98,10 @@ class ListingsRecyclerAdapter(val fragment: ListingsListFragment) :
 
             if (listingWithImages.images.isNotEmpty()) {
                 GlideApp.with(itemView.context)
-                    .load(listingWithImages.images.split(" ")[0])
+                    .load(
+                        BASE_API_URL.substring(0, BASE_API_URL.length - 1) +
+                                listingWithImages.images.split(" ")[0].split("~")[1]
+                    )
                     .placeholder(R.drawable.ic_no_photo)
                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(itemView.listingPhoto)

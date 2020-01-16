@@ -42,11 +42,12 @@ class ListingsListViewModel(val app: Application) : AndroidViewModel(app) {
                         repository.getOpenListings(0, listingsToLoad)
                     } else repository.getMyListings()
                 val result = ArrayList(list.map { ListingWithImages(it) })
-                list.forEach { listing ->
+                result.forEachIndexed { index, listingWithImages ->
+                    val listing = listingWithImages.listing
                     repository.getListingImages(listing.id!!).forEach { listingImage ->
-                        val index = result.indexOfFirst { listing.id == listingImage.listingId }
                         val image = repository.getImage(listingImage.imageId)
-                        val newImagesValue = result[index]?.images + " ${image.url}"
+                        val newImagesValue = listingWithImages.images + " ${image.id}~${image.url}"
+                        listingWithImages.images = newImagesValue.trim()
                         result[index].images = newImagesValue.trim()
                     }
                 }
@@ -65,11 +66,12 @@ class ListingsListViewModel(val app: Application) : AndroidViewModel(app) {
             try {
                 val newListings = repository.getOpenListings(currentNumberOfListings, 7)
                 val result = ArrayList(newListings.map { ListingWithImages(it) })
-                newListings.forEach { listing ->
+                result.forEachIndexed { index, listingWithImages ->
+                    val listing = listingWithImages.listing
                     repository.getListingImages(listing.id!!).forEach { listingImage ->
-                        val index = result.indexOfFirst { listing.id == listingImage.listingId }
                         val image = repository.getImage(listingImage.imageId)
-                        val newImagesValue = result[index]?.images + " ${image.url}"
+                        val newImagesValue = listingWithImages.images + " ${image.id}~${image.url}"
+                        listingWithImages.images = newImagesValue.trim()
                         result[index].images = newImagesValue.trim()
                     }
                 }
@@ -91,6 +93,7 @@ class ListingsListViewModel(val app: Application) : AndroidViewModel(app) {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     val numberOfVotes = repository.getListingVotes()
+                    if (numberOfVotes == 0) return@launch
                     listingVotes.postValue(
                         repository.getListingVotes(0, numberOfVotes).toMutableList()
                     )

@@ -1,18 +1,19 @@
 package pl.sokolowskibartlomiej.naprawiamy.view.adapters
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.android.synthetic.main.item_photo.view.*
 import pl.sokolowskibartlomiej.naprawiamy.R
+import pl.sokolowskibartlomiej.naprawiamy.apicalls.RetrofitClient.BASE_API_URL
+import pl.sokolowskibartlomiej.naprawiamy.utils.GlideApp
 
-class PhotoRecyclerAdapter(val hideEmptyList: () -> Unit) :
-    RecyclerView.Adapter<PhotoRecyclerAdapter.PhotoViewHolder>() {
+class PhotoDetailsRecyclerAdapter(val isDeletingAllowed: Boolean, val hideEmptyList: () -> Unit) :
+    RecyclerView.Adapter<PhotoDetailsRecyclerAdapter.PhotoViewHolder>() {
 
-    private var mPhotos = arrayListOf<Uri>()
-    private var isDeletingAllowed = true
+    private var mPhotos = arrayListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder =
         PhotoViewHolder(
@@ -29,21 +30,27 @@ class PhotoRecyclerAdapter(val hideEmptyList: () -> Unit) :
     override fun getItemCount(): Int = mPhotos.size
 
     fun getPhotosList() = mPhotos
-    fun setPhotosList(list: List<Uri>) {
+    fun setPhotosList(list: List<String>) {
         mPhotos = ArrayList(list)
         notifyDataSetChanged()
     }
 
 
     inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindView(photoUri: Uri) {
-            itemView.listingPhoto.setImageURI(photoUri)
+        fun bindView(photoUrl: String) {
+            GlideApp.with(itemView.context)
+                .load(
+                    BASE_API_URL.substring(0, BASE_API_URL.length - 1) + photoUrl.split("~")[1]
+                )
+                .placeholder(R.drawable.ic_no_photo)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .into(itemView.listingPhoto)
             if (!isDeletingAllowed) {
                 itemView.deletePhotoBtn.visibility = View.GONE
             } else {
                 itemView.deletePhotoBtn.visibility = View.VISIBLE
                 itemView.deletePhotoBtn.setOnClickListener {
-                    mPhotos.remove(photoUri)
+                    mPhotos.remove(photoUrl)
                     notifyDataSetChanged()
                     if (mPhotos.size == 0) hideEmptyList()
                 }

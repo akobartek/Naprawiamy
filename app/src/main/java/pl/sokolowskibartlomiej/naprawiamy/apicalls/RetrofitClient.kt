@@ -18,7 +18,7 @@ object RetrofitClient {
         .add(Date::class.java, DateJsonAdapter().nullSafe())
         .build()
 
-    private const val BASE_API_URL = "http://192.168.0.100:5001/"
+    const val BASE_API_URL = "http://192.168.0.100:5001/"
     private var apiClient: Retrofit? = null
     val naprawiamyApi: NaprawiamyApi = getClient().create(NaprawiamyApi::class.java)
     val authorizedNaprawiamyApi: NaprawiamyApi =

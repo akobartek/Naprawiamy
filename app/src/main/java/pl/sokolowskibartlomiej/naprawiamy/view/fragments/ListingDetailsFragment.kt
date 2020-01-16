@@ -15,26 +15,33 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.transition.TransitionInflater
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.content_listing_details.view.*
 import kotlinx.android.synthetic.main.fragment_listing_details.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import pl.sokolowskibartlomiej.naprawiamy.R
+import pl.sokolowskibartlomiej.naprawiamy.apicalls.RetrofitClient.BASE_API_URL
 import pl.sokolowskibartlomiej.naprawiamy.model.Listing
 import pl.sokolowskibartlomiej.naprawiamy.model.ListingProposal
 import pl.sokolowskibartlomiej.naprawiamy.model.ListingWithImages
-import pl.sokolowskibartlomiej.naprawiamy.utils.PreferencesManager
-import pl.sokolowskibartlomiej.naprawiamy.utils.disable
-import pl.sokolowskibartlomiej.naprawiamy.utils.format
-import pl.sokolowskibartlomiej.naprawiamy.utils.tryToRunFunctionOnInternet
+import pl.sokolowskibartlomiej.naprawiamy.utils.*
+import pl.sokolowskibartlomiej.naprawiamy.view.adapters.PhotoDetailsRecyclerAdapter
 import pl.sokolowskibartlomiej.naprawiamy.view.adapters.ProposalsRecyclerAdapter
+import pl.sokolowskibartlomiej.naprawiamy.view.views.CircleIndicatorDecoration
 import pl.sokolowskibartlomiej.naprawiamy.viewmodels.ListingDetailsViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class ListingDetailsFragment : BaseFragment() {
 
     private lateinit var mViewModel: ListingDetailsViewModel
+    private lateinit var mPhotosAdapter: PhotoDetailsRecyclerAdapter
     private lateinit var mProposalsAdapter: ProposalsRecyclerAdapter
     private lateinit var mBottomSheetBehavior: BottomSheetBehavior<*>
     private lateinit var mCategoriesFragment: CategoriesFragment
@@ -78,13 +85,44 @@ class ListingDetailsFragment : BaseFragment() {
                 {})
         }
 
-        // TODO() -> IMAGES!!!
+        if (!mListing?.images.isNullOrEmpty()) {
+            GlideApp.with(requireContext())
+                .load(
+                    BASE_API_URL.substring(0, BASE_API_URL.length - 1) +
+                            mListing!!.images.split(" ")[0].split("~")[1]
+                )
+                .placeholder(R.drawable.ic_no_photo)
+                .into(view.listingDetailsPhoto)
+        }
         view.listingDetailsPhoto.transitionName = requireArguments().getString("transitionName")
-//        GlideApp.with(requireContext())
-//            .load(mListing!!.im?.get(0))
-//            .placeholder(R.drawable.ic_no_photo)
-//            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-//            .into(view.listingDetailsPhoto)
+        mPhotosAdapter =
+            PhotoDetailsRecyclerAdapter(!PreferencesManager.isSpecialist()) { hideEmptyList() }
+        view.photosRecyclerView.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            itemAnimator = DefaultItemAnimator()
+            addItemDecoration(
+                CircleIndicatorDecoration(
+                    requireContext().getAttributeColor(R.attr.colorPrimaryDark),
+                    requireContext().getAttributeColor(R.attr.colorIndicatorInactive)
+                )
+            )
+            adapter = mPhotosAdapter
+        }
+        PagerSnapHelper().attachToRecyclerView(view.photosRecyclerView)
+        if (!mListing?.images.isNullOrEmpty()) {
+            GlobalScope.launch(Dispatchers.IO) {
+                delay(450)
+                requireActivity().runOnUiThread {
+                    view.photosRecyclerView?.visibility = View.VISIBLE
+                    view.listingDetailsPhoto?.setImageResource(android.R.color.transparent)
+                }
+            }
+            mPhotosAdapter.setPhotosList(mListing!!.images.split(" "))
+        } else {
+            view.photosRecyclerView?.visibility = View.GONE
+        }
+
         view.listingDetailsToolbar.title = mListing!!.listing.title
         view.titleET.setText(mListing!!.listing.title)
         view.descriptionET.setText(mListing!!.listing.description)
@@ -182,6 +220,7 @@ class ListingDetailsFragment : BaseFragment() {
                 if (specialistProposal != null) showProposalAlreadyExistsDialog()
                 else showProposalDialog()
             } else {
+                // TODO() -> Delete photos
                 if (view.titleET.text.toString() == "" || view.descriptionET.text.toString() == "" ||
                     view.addressET.text.toString() == "" || view.proposedValueET.text.toString() == ""
                 ) {
@@ -236,6 +275,11 @@ class ListingDetailsFragment : BaseFragment() {
     fun hideBottomSheet() {
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         view?.updateListingBtn?.show()
+    }
+
+    private fun hideEmptyList() {
+        view?.photosRecyclerView?.visibility = View.INVISIBLE
+        view?.listingDetailsPhoto?.setImageResource(R.drawable.ic_no_photo)
     }
 
     fun onUpdateSuccessful() {

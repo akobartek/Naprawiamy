@@ -182,35 +182,6 @@ class ListingAddFragment : BaseFragment() {
             } else if (data?.data != null) {
                 photos.add(data.data!!)
             }
-//            val filePathColumn = arrayOf(MediaStore.Images.Media._ID)
-//            val imagesEncodedList = ArrayList<String>()
-//            if (data?.data != null) {
-//                val mImageUri: Uri = data.data!!
-//                val cursor = requireActivity().contentResolver
-//                    .query(mImageUri, filePathColumn, null, null, null)!!
-//                cursor.moveToFirst()
-//                val columnIndex = cursor.getColumnIndex(filePathColumn[0])
-//                imagesEncodedList.add(cursor.getString(columnIndex))
-//                cursor.close()
-//            } else {
-//                if (data?.clipData != null) {
-//                    val mClipData: ClipData = data.clipData!!
-//                    val mArrayUri = ArrayList<Uri>()
-//                    for (i in 0 until mClipData.itemCount) {
-//                        val item = mClipData.getItemAt(i)
-//                        val uri = item.uri
-//                        mArrayUri.add(uri)
-//                        val cursor: Cursor = requireActivity().contentResolver
-//                            .query(uri, filePathColumn, null, null, null)!!
-//                        cursor.moveToFirst()
-//                        val columnIndex = cursor.getColumnIndex(filePathColumn[0])
-//                        val imageEncoded = cursor.getString(columnIndex)
-//                        imagesEncodedList.add(imageEncoded)
-//                        cursor.close()
-//                    }
-//                }
-//            }
-//            Log.d("OMFG", imagesEncodedList.toString())
             mAdapter.setPhotosList(photos)
             view?.photosRecyclerView?.visibility = View.VISIBLE
             view?.addPhotosBtn?.setImageResource(android.R.color.transparent)
