@@ -37,7 +37,10 @@ class ListingDetailsViewModel(val app: Application) : AndroidViewModel(app) {
     fun fetchSpecialistProposals() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                proposals.postValue(repository.getListingProposals().toMutableList())
+                val numberOfProposals = repository.getListingProposals()
+                proposals.postValue(
+                    repository.getListingProposals(0, numberOfProposals).toMutableList()
+                )
             } catch (exc: Throwable) {
                 proposals.postValue(mutableListOf())
             }
@@ -48,7 +51,8 @@ class ListingDetailsViewModel(val app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val specialist = repository.getSpecialistInfoByProposal(listingProposalId)
-                val votes = repository.getUserListingVotes(specialist.id!!)
+                val numberOfVotes = repository.getUserListingVotes(specialist.id!!)
+                val votes = repository.getUserListingVotes(specialist.id, 0, numberOfVotes)
                 specialists.value!!.add(UserWithVotes(specialist, votes))
                 specialists.postValue(specialists.value)
             } catch (exc: Throwable) {

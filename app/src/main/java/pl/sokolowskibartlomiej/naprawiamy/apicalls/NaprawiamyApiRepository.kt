@@ -8,7 +8,10 @@ import pl.sokolowskibartlomiej.naprawiamy.model.*
 class NaprawiamyApiRepository {
 
     // region Categories
-    suspend fun getCategories(): List<Category> = authorizedNaprawiamyApi.getCategories()
+    suspend fun getCategories(): Int = authorizedNaprawiamyApi.getCategories()
+
+    suspend fun getCategories(offset: Int, count: Int): List<Category> =
+        authorizedNaprawiamyApi.getCategories(offset, count)
 
     suspend fun getCategoriesByParentId(parentId: Int): List<Category> =
         authorizedNaprawiamyApi.getCategoriesByParentId(parentId)
@@ -22,6 +25,8 @@ class NaprawiamyApiRepository {
         authorizedNaprawiamyApi.deleteSpecialistCategory(categoryId).isSuccessful
 
     suspend fun getSpecialistCategories() = authorizedNaprawiamyApi.getSpecialistCategories()
+    suspend fun getSpecialistCategories(offset: Int, count: Int) =
+        authorizedNaprawiamyApi.getSpecialistCategories(offset, count)
     // endregion
 
     // region Images
@@ -31,6 +36,8 @@ class NaprawiamyApiRepository {
         authorizedNaprawiamyApi.deleteImage(imageId).isSuccessful
 
     suspend fun getUserImages() = authorizedNaprawiamyApi.getUserImages()
+    suspend fun getUserImages(offset: Int, count: Int) =
+        authorizedNaprawiamyApi.getUserImages(offset, count)
 
     suspend fun getImage(imageId: Int) = authorizedNaprawiamyApi.getImage(imageId)
 
@@ -59,6 +66,8 @@ class NaprawiamyApiRepository {
         authorizedNaprawiamyApi.deleteListingProposal(listingId).isSuccessful
 
     suspend fun getListingProposals() = authorizedNaprawiamyApi.getListingProposals()
+    suspend fun getListingProposals(offset: Int, count: Int) =
+        authorizedNaprawiamyApi.getListingProposals(offset, count)
 
     suspend fun getListingProposalForListing(listingId: Int) =
         authorizedNaprawiamyApi.getListingProposalForListing(listingId)
@@ -76,6 +85,8 @@ class NaprawiamyApiRepository {
     suspend fun getMyListings() = authorizedNaprawiamyApi.getMyListings()
 
     suspend fun getOpenListings() = authorizedNaprawiamyApi.getOpenListings()
+    suspend fun getOpenListings(offset: Int, count: Int) =
+        authorizedNaprawiamyApi.getOpenListings(offset, count)
 
     suspend fun acceptListingProposal(listingProposalId: Int): Boolean =
         authorizedNaprawiamyApi.acceptListingProposal(listingProposalId).isSuccessful
@@ -89,9 +100,14 @@ class NaprawiamyApiRepository {
         authorizedNaprawiamyApi.deleteListingVote(listingId).isSuccessful
 
     suspend fun getListingVotes() = authorizedNaprawiamyApi.getListingVotes()
+    suspend fun getListingVotes(offset: Int, count: Int) =
+        authorizedNaprawiamyApi.getListingVotes(offset, count)
 
     suspend fun getUserListingVotes(userId: Int) =
         authorizedNaprawiamyApi.getUserListingVotes(userId)
+
+    suspend fun getUserListingVotes(userId: Int, offset: Int, count: Int) =
+        authorizedNaprawiamyApi.getUserListingVotes(userId, offset, count)
     // endregion
 
     // region Users

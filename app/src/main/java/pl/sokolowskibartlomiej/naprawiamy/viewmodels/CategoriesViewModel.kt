@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pl.sokolowskibartlomiej.naprawiamy.apicalls.NaprawiamyApiRepository
 import pl.sokolowskibartlomiej.naprawiamy.model.Category
+import pl.sokolowskibartlomiej.naprawiamy.utils.PreferencesManager
 
 class CategoriesViewModel(val app: Application) : AndroidViewModel(app) {
 
@@ -19,7 +20,18 @@ class CategoriesViewModel(val app: Application) : AndroidViewModel(app) {
     fun fetchCategories() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                categories.postValue(repository.getCategories())
+                val listOfCategories =
+                    if (!PreferencesManager.getCategoriesString().isNullOrEmpty())
+                        PreferencesManager.getCategoriesString()
+                            ?.split("~")
+                            ?.map { Category.createCategoryFromString(it) }
+                    else {
+                        val numberOfCategories = repository.getCategories()
+                        val list = repository.getCategories(0, numberOfCategories)
+                        PreferencesManager.setCategoriesString(list)
+                        list
+                    }
+                categories.postValue(listOfCategories)
             } catch (exc: Throwable) {
                 Log.d("Error!", exc.message.toString())
             }

@@ -21,12 +21,22 @@ class ListingsListViewModel(val app: Application) : AndroidViewModel(app) {
 
     val listingVotes = MutableLiveData<MutableList<ListingVote>>()
 
+    var currentNumberOfListings = 0
+    var numberOfAllListings = 0
+
     fun fetchListings() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val list =
-                    if (PreferencesManager.isSpecialist()) repository.getOpenListings()
-                    else repository.getMyListings()
+                    if (PreferencesManager.isSpecialist()) {
+                        numberOfAllListings = repository.getOpenListings()
+                        val listingsToLoad = when {
+                            numberOfAllListings <= 7 -> numberOfAllListings
+                            currentNumberOfListings != 0 -> currentNumberOfListings
+                            else -> 7
+                        }
+                        repository.getOpenListings(0, listingsToLoad)
+                    } else repository.getMyListings()
                 val result = ArrayList(list.map { ListingWithImages(it) })
                 list.forEach { listing ->
                     repository.getListingImages(listing.id!!).forEach { listingImage ->
@@ -37,9 +47,37 @@ class ListingsListViewModel(val app: Application) : AndroidViewModel(app) {
                     }
                 }
 
+                currentNumberOfListings = result.size
                 listings.postValue(result.toMutableList())
             } catch (exc: Throwable) {
+                Log.e("ListingsListViewModel", exc.toString())
                 listings.postValue(mutableListOf())
+            }
+        }
+    }
+
+    fun fetchMoreListings(fragment: ListingsListFragment) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val newListings = repository.getOpenListings(currentNumberOfListings, 7)
+                val result = ArrayList(newListings.map { ListingWithImages(it) })
+                newListings.forEach { listing ->
+                    repository.getListingImages(listing.id!!).forEach { listingImage ->
+                        val index = result.indexOfFirst { listing.id == listingImage.listingId }
+                        val image = repository.getImage(listingImage.imageId)
+                        val newImagesValue = result[index]?.images + " ${image.url}"
+                        result[index].images = newImagesValue.trim()
+                    }
+                }
+
+                val newList = listings.value
+                newList?.addAll(result)
+                currentNumberOfListings = newList?.size ?: 0
+                listings.postValue(newList)
+                fragment.requireActivity().runOnUiThread { fragment.loadingDialog.dismiss() }
+            } catch (exc: Throwable) {
+                Log.e("ListingsListViewModel", exc.toString())
+                fragment.requireActivity().runOnUiThread { fragment.loadingDialog.dismiss() }
             }
         }
     }
@@ -48,7 +86,10 @@ class ListingsListViewModel(val app: Application) : AndroidViewModel(app) {
         if (!PreferencesManager.isSpecialist())
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    listingVotes.postValue(repository.getListingVotes().toMutableList())
+                    val numberOfVotes = repository.getListingVotes()
+                    listingVotes.postValue(
+                        repository.getListingVotes(0, numberOfVotes).toMutableList()
+                    )
                 } catch (exc: Throwable) {
                     Log.e("ListingsListViewModel", exc.toString())
                 }

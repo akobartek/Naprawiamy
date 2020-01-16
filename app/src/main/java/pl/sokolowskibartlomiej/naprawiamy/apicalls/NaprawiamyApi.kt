@@ -9,7 +9,10 @@ interface NaprawiamyApi {
 
     // region Categories
     @GET("Categories")
-    suspend fun getCategories(): List<Category>
+    suspend fun getCategories(): Int
+
+    @GET("Categories/{offset}/{count}")
+    suspend fun getCategories(@Path("offset") offset: Int, @Path("count") count: Int): List<Category>
 
     @GET("Categories/{parentId}")
     suspend fun getCategoriesByParentId(@Path("parentId") parentId: Int): List<Category>
@@ -23,7 +26,10 @@ interface NaprawiamyApi {
     suspend fun deleteSpecialistCategory(@Path("categoryId") categoryId: Int): Response<Void>
 
     @GET("SpecialistCategories")
-    suspend fun getSpecialistCategories(): List<Category>
+    suspend fun getSpecialistCategories(): Int
+
+    @GET("SpecialistCategories/{offset}/{count}")
+    suspend fun getSpecialistCategories(@Path("offset") offset: Int, @Path("count") count: Int): List<Category>
     // endregion
 
     // region Images
@@ -34,7 +40,10 @@ interface NaprawiamyApi {
     suspend fun deleteImage(@Path("imageId") imageId: Int): Response<Void>
 
     @GET("Images")
-    suspend fun getUserImages(): List<Image>
+    suspend fun getUserImages(): Int
+
+    @GET("Images/{offset}/{count}")
+    suspend fun getUserImages(@Path("offset") offset: Int, @Path("count") count: Int): List<Image>
 
     @GET("Images/{imageId}")
     suspend fun getImage(@Path("imageId") imageId: Int): Image
@@ -65,8 +74,11 @@ interface NaprawiamyApi {
     @DELETE("ListingProposals/{listingId}")
     suspend fun deleteListingProposal(@Path("listingId") listingId: Int): Response<Void>
 
+    @GET("ListingProposals/{offset}/{count}")
+    suspend fun getListingProposals(): Int
+
     @GET("ListingProposals")
-    suspend fun getListingProposals(): List<ListingProposal>
+    suspend fun getListingProposals(@Path("offset") offset: Int, @Path("count") count: Int): List<ListingProposal>
 
     @GET("ListingProposals/{listingId}")
     suspend fun getListingProposalForListing(@Path("listingId") listingId: Int): List<ListingProposal>
@@ -86,7 +98,10 @@ interface NaprawiamyApi {
     suspend fun getMyListings(): List<Listing>
 
     @GET("Listings/Open")
-    suspend fun getOpenListings(): List<Listing>
+    suspend fun getOpenListings(): Int
+
+    @GET("Listings/Open/{offset}/{count}")
+    suspend fun getOpenListings(@Path("offset") offset: Int, @Path("count") count: Int): List<Listing>
 
     @PATCH("Listings/Accept/{listingProposalId}")
     suspend fun acceptListingProposal(@Path("listingProposalId") listingProposalId: Int): Response<Void>
@@ -99,11 +114,21 @@ interface NaprawiamyApi {
     @DELETE("ListingVotes/{listingId}")
     suspend fun deleteListingVote(@Path("listingId") listingId: Int): Response<Void>
 
-    @GET("ListingVotes")
-    suspend fun getListingVotes(): List<ListingVote>
+    @GET("ListingVotes/Sent")
+    suspend fun getListingVotes(): Int
+
+    @GET("ListingVotes/Sent/{offset}/{count}")
+    suspend fun getListingVotes(@Path("offset") offset: Int, @Path("count") count: Int): List<ListingVote>
 
     @GET("ListingVotes/{userId}")
-    suspend fun getUserListingVotes(@Path("userId") userId: Int): List<ListingVote>
+    suspend fun getUserListingVotes(@Path("userId") userId: Int): Int
+
+    @GET("ListingVotes/{userId}/{offset}/{count}")
+    suspend fun getUserListingVotes(
+        @Path("userId") userId: Int,
+        @Path("offset") offset: Int,
+        @Path("count") count: Int
+    ): List<ListingVote>
     // endregion
 
     // region Users

@@ -1,8 +1,6 @@
 package pl.sokolowskibartlomiej.naprawiamy.viewmodels
 
 import android.app.Application
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -17,8 +15,6 @@ import pl.sokolowskibartlomiej.naprawiamy.model.Listing
 import pl.sokolowskibartlomiej.naprawiamy.model.ListingImage
 import pl.sokolowskibartlomiej.naprawiamy.utils.FileUtils
 import pl.sokolowskibartlomiej.naprawiamy.view.fragments.ListingAddFragment
-import java.io.File
-import java.io.FileOutputStream
 
 class ListingAddViewModel(val app: Application) : AndroidViewModel(app) {
 

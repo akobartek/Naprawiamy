@@ -56,10 +56,14 @@ class ListingsListFragment : BaseFragment() {
         view.listingsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dy < 0 && !view.addListingBtn.isShown)
+                if (!PreferencesManager.isSpecialist() && dy < 0 && !view.addListingBtn.isShown)
                     view.addListingBtn.show()
-                else if (dy > 0 && view.addListingBtn.isShown)
+                else if (!PreferencesManager.isSpecialist() && dy > 0 && view.addListingBtn.isShown)
                     view.addListingBtn.hide()
+
+                if (PreferencesManager.isSpecialist() && !recyclerView.canScrollVertically(1)) {
+                    loadMoreListings()
+                }
             }
         })
 
@@ -116,6 +120,43 @@ class ListingsListFragment : BaseFragment() {
         } else {
             true
         }
+    }
+
+    private fun fetchListings() {
+        mSearchView.onActionViewCollapsed()
+        if (!PreferencesManager.isSpecialist())
+            requireActivity().tryToRunFunctionOnInternet({ mViewModel.fetchVotes() }, {})
+        requireActivity().tryToRunFunctionOnInternet({ mViewModel.fetchListings() }, {})
+    }
+
+    private fun loadMoreListings() {
+        if (PreferencesManager.isSpecialist() && mViewModel.numberOfAllListings > mViewModel.currentNumberOfListings) {
+            loadingDialog.show()
+            requireActivity().tryToRunFunctionOnInternet(
+                { mViewModel.fetchMoreListings(this@ListingsListFragment) },
+                { loadingDialog.dismiss() })
+        }
+    }
+
+    private fun inflateToolbarMenu(toolbar: Toolbar) {
+        toolbar.inflateMenu(R.menu.listings_menu)
+        val searchManager =
+            requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        mSearchView = toolbar.menu.findItem(R.id.action_search).actionView as SearchView
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
+        mSearchView.maxWidth = Integer.MAX_VALUE
+
+        mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                mAdapter.filter.filter(query)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                mAdapter.filter.filter(newText)
+                return false
+            }
+        })
     }
 
     @SuppressLint("InflateParams")
@@ -203,32 +244,5 @@ class ListingsListFragment : BaseFragment() {
             requireContext().getText(R.string.vote_delete_error),
             Toast.LENGTH_SHORT
         ).show()
-    }
-
-    private fun fetchListings() {
-        mSearchView.onActionViewCollapsed()
-        requireActivity().tryToRunFunctionOnInternet({ mViewModel.fetchVotes() }, {})
-        requireActivity().tryToRunFunctionOnInternet({ mViewModel.fetchListings() }, {})
-    }
-
-    private fun inflateToolbarMenu(toolbar: Toolbar) {
-        toolbar.inflateMenu(R.menu.listings_menu)
-        val searchManager =
-            requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        mSearchView = toolbar.menu.findItem(R.id.action_search).actionView as SearchView
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
-        mSearchView.maxWidth = Integer.MAX_VALUE
-
-        mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                mAdapter.filter.filter(query)
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                mAdapter.filter.filter(newText)
-                return false
-            }
-        })
     }
 }

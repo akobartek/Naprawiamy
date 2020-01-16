@@ -22,7 +22,10 @@ class UserViewModel(val app: Application) : AndroidViewModel(app) {
     fun fetchSpecialistCategories() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                categories.postValue(repository.getSpecialistCategories().toMutableList())
+                val numberOfCategories = repository.getSpecialistCategories()
+                categories.postValue(
+                    repository.getSpecialistCategories(0, numberOfCategories).toMutableList()
+                )
             } catch (exc: Throwable) {
                 Log.e("UserViewModel", exc.toString())
                 categories.postValue(mutableListOf())
