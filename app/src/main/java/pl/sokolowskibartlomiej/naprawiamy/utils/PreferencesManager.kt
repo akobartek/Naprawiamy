@@ -1,6 +1,7 @@
 package pl.sokolowskibartlomiej.naprawiamy.utils
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.preference.PreferenceManager
 import pl.sokolowskibartlomiej.naprawiamy.NaprawiamyApplication
 import pl.sokolowskibartlomiej.naprawiamy.model.Category
@@ -33,7 +34,9 @@ object PreferencesManager {
 
     fun setCategoriesString(categories: List<Category>) {
         sharedPref.edit()
-            .putString(CATEGORIES, categories.joinToString(separator = "~"))
+            .putString(
+                CATEGORIES, categories.joinToString(separator = "~") { it.getCategoryAsString() }
+            )
             .apply()
     }
 

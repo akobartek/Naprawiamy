@@ -19,6 +19,7 @@ class CategoriesViewModel(val app: Application) : AndroidViewModel(app) {
 
     fun fetchCategories() {
         viewModelScope.launch(Dispatchers.IO) {
+            PreferencesManager.setCategoriesString(listOf())
             try {
                 val listOfCategories =
                     if (!PreferencesManager.getCategoriesString().isNullOrEmpty())

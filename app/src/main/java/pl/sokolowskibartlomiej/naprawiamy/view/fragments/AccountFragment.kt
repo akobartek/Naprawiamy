@@ -46,6 +46,14 @@ class AccountFragment : BaseFragment() {
         disableAllEditTexts()
         mBottomSheetBehavior = from(view.findViewById<View>(R.id.skillsSheet))
         mBottomSheetBehavior.state = STATE_HIDDEN
+        mBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == STATE_COLLAPSED || newState == STATE_HIDDEN)
+                    view.accountFab.show()
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
 
         mUserViewModel = ViewModelProvider(this@AccountFragment).get(UserViewModel::class.java)
         mUser = User.createUserFromString(PreferencesManager.getUserString() ?: "")
@@ -178,7 +186,6 @@ class AccountFragment : BaseFragment() {
 
     fun hideBottomSheet() {
         mBottomSheetBehavior.state = STATE_HIDDEN
-        view?.accountFab?.show()
     }
 
     private fun enableAllEditTexts() {
@@ -213,7 +220,7 @@ class AccountFragment : BaseFragment() {
     }
 
     private val mTouchListener = View.OnTouchListener { _, _ ->
-        isUserEdited = true
+        if (mIsEditing) isUserEdited = true
         false
     }
 }

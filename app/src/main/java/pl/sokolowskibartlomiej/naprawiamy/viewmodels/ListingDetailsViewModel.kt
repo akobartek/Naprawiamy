@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import pl.sokolowskibartlomiej.naprawiamy.apicalls.NaprawiamyApiRepository
 import pl.sokolowskibartlomiej.naprawiamy.model.Listing
 import pl.sokolowskibartlomiej.naprawiamy.model.ListingProposal
+import pl.sokolowskibartlomiej.naprawiamy.model.ListingVote
 import pl.sokolowskibartlomiej.naprawiamy.model.UserWithVotes
 import pl.sokolowskibartlomiej.naprawiamy.view.fragments.ListingDetailsFragment
 
@@ -38,6 +39,10 @@ class ListingDetailsViewModel(val app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val numberOfProposals = repository.getListingProposals()
+                if (numberOfProposals == 0) {
+                    proposals.postValue(mutableListOf())
+                    return@launch
+                }
                 proposals.postValue(
                     repository.getListingProposals(0, numberOfProposals).toMutableList()
                 )
@@ -52,7 +57,9 @@ class ListingDetailsViewModel(val app: Application) : AndroidViewModel(app) {
             try {
                 val specialist = repository.getSpecialistInfoByProposal(listingProposalId)
                 val numberOfVotes = repository.getUserListingVotes(specialist.id!!)
-                val votes = repository.getUserListingVotes(specialist.id, 0, numberOfVotes)
+                val votes =
+                    if (numberOfVotes == 0) listOf()
+                    else repository.getUserListingVotes(specialist.id, 0, numberOfVotes)
                 specialists.value!!.add(UserWithVotes(specialist, votes))
                 specialists.postValue(specialists.value)
             } catch (exc: Throwable) {

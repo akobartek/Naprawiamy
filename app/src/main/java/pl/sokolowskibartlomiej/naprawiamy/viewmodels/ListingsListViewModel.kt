@@ -30,6 +30,10 @@ class ListingsListViewModel(val app: Application) : AndroidViewModel(app) {
                 val list =
                     if (PreferencesManager.isSpecialist()) {
                         numberOfAllListings = repository.getOpenListings()
+                        if (numberOfAllListings == 0) {
+                            listings.postValue(mutableListOf())
+                            return@launch
+                        }
                         val listingsToLoad = when {
                             numberOfAllListings <= 7 -> numberOfAllListings
                             currentNumberOfListings != 0 -> currentNumberOfListings

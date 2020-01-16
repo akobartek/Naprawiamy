@@ -23,6 +23,10 @@ class UserViewModel(val app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val numberOfCategories = repository.getSpecialistCategories()
+                if (numberOfCategories == 0) {
+                    categories.postValue(mutableListOf())
+                    return@launch
+                }
                 categories.postValue(
                     repository.getSpecialistCategories(0, numberOfCategories).toMutableList()
                 )
