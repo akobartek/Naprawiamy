@@ -129,7 +129,7 @@ class MainActivity : BaseActivity() {
                     (supportFragmentManager.findFragmentById(R.id.navHostFragment)!!
                         .childFragmentManager.fragments[0] as ListingDetailsFragment)
                 if (detailsFragment.onBackPressed()) {
-                    if (!detailsFragment.isEditing)
+                    if (detailsFragment.isEditing)
                         showUnsavedChangesDialog { findNavController(R.id.navHostFragment).navigateUp() }
                     else findNavController(R.id.navHostFragment).navigateUp()
                 }

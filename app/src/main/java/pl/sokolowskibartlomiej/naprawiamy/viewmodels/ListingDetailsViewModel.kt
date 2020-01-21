@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import pl.sokolowskibartlomiej.naprawiamy.apicalls.NaprawiamyApiRepository
 import pl.sokolowskibartlomiej.naprawiamy.model.Listing
 import pl.sokolowskibartlomiej.naprawiamy.model.ListingProposal
-import pl.sokolowskibartlomiej.naprawiamy.model.ListingVote
 import pl.sokolowskibartlomiej.naprawiamy.model.UserWithVotes
 import pl.sokolowskibartlomiej.naprawiamy.view.fragments.ListingDetailsFragment
 
@@ -68,10 +67,21 @@ class ListingDetailsViewModel(val app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun updateListing(listing: Listing, fragment: ListingDetailsFragment) {
+    fun updateListing(
+        listing: Listing,
+        deletedPhotosIds: List<String>,
+        fragment: ListingDetailsFragment
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val isUpdateSuccessful = repository.updateListing(listing)
+                if (deletedPhotosIds.isNotEmpty()) {
+                    val listingImages = repository.getListingImages(listing.id!!)
+                    deletedPhotosIds.forEach { imageId ->
+                        repository.deleteListingImages(listingImages.find { it.imageId == imageId.toInt() }!!.id)
+                        repository.deleteImage(imageId.toInt())
+                    }
+                }
                 fragment.requireActivity().runOnUiThread {
                     fragment.loadingDialog.dismiss()
                     if (isUpdateSuccessful) {

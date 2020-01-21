@@ -220,7 +220,12 @@ class ListingDetailsFragment : BaseFragment() {
                 if (specialistProposal != null) showProposalAlreadyExistsDialog()
                 else showProposalDialog()
             } else {
-                // TODO() -> Delete photos
+                val deletedPhotosIds = arrayListOf<String>()
+                mListing!!.images.split(" ").forEach {
+                    if (!mPhotosAdapter.getPhotosList().contains(it))
+                        deletedPhotosIds.add(it.split("~")[0])
+                }
+                if (deletedPhotosIds.isNotEmpty()) isEditing = true
                 if (view.titleET.text.toString() == "" || view.descriptionET.text.toString() == "" ||
                     view.addressET.text.toString() == "" || view.proposedValueET.text.toString() == ""
                 ) {
@@ -248,7 +253,11 @@ class ListingDetailsFragment : BaseFragment() {
                     if (mListing.toString() != updatedListing.toString()) {
                         loadingDialog.show()
                         requireActivity().tryToRunFunctionOnInternet({
-                            mViewModel.updateListing(updatedListing, this@ListingDetailsFragment)
+                            mViewModel.updateListing(
+                                updatedListing,
+                                deletedPhotosIds,
+                                this@ListingDetailsFragment
+                            )
                         }, { loadingDialog.dismiss() })
                     }
                 }
